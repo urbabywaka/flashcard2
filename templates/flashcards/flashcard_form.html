@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ action }} Flashcard - Flashcard App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">
+                    <i class="bi bi-{% if action == 'Create' %}plus-circle{% else %}pencil{% endif %}"></i> 
+                    {{ action }} Flashcard
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.topic.id_for_label }}" class="form-label">
+                            {{ form.topic.label }} <span class="text-danger">*</span>
+                        </label>
+                        {{ form.topic }}
+                        {% if form.topic.errors %}
+                        <div class="text-danger small mt-1">{{ form.topic.errors }}</div>
+                        {% endif %}
+                        <small class="text-muted">e.g., Mathematics, History, Programming</small>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.front.id_for_label }}" class="form-label">
+                            {{ form.front.label }} <span class="text-danger">*</span>
+                        </label>
+                        {{ form.front }}
+                        {% if form.front.errors %}
+                        <div class="text-danger small mt-1">{{ form.front.errors }}</div>
+                        {% endif %}
+                        <small class="text-muted">The question or prompt you want to remember</small>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.back.id_for_label }}" class="form-label">
+                            {{ form.back.label }} <span class="text-danger">*</span>
+                        </label>
+                        {{ form.back }}
+                        {% if form.back.errors %}
+                        <div class="text-danger small mt-1">{{ form.back.errors }}</div>
+                        {% endif %}
+                        <small class="text-muted">The answer or explanation</small>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {{ action }} Flashcard
+                        </button>
+                        <a href="{% url 'flashcards:flashcard_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Preview Card -->
+        <div class="card mt-4" id="preview-card" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-eye"></i> Preview</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <strong>Topic:</strong> <span id="preview-topic" class="badge bg-primary"></span>
+                </div>
+                <div class="mb-2">
+                    <strong>Front:</strong>
+                    <div id="preview-front" class="p-3 bg-light rounded mt-1"></div>
+                </div>
+                <div>
+                    <strong>Back:</strong>
+                    <div id="preview-back" class="p-3 bg-light rounded mt-1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Live preview
+    const topicInput = document.getElementById('{{ form.topic.id_for_label }}');
+    const frontInput = document.getElementById('{{ form.front.id_for_label }}');
+    const backInput = document.getElementById('{{ form.back.id_for_label }}');
+    const previewCard = document.getElementById('preview-card');
+    const previewTopic = document.getElementById('preview-topic');
+    const previewFront = document.getElementById('preview-front');
+    const previewBack = document.getElementById('preview-back');
+    
+    function updatePreview() {
+        const topic = topicInput.value.trim();
+        const front = frontInput.value.trim();
+        const back = backInput.value.trim();
+        
+        if (topic || front || back) {
+            previewCard.style.display = 'block';
+            previewTopic.textContent = topic || 'No topic';
+            previewFront.textContent = front || 'No question';
+            previewBack.textContent = back || 'No answer';
+        } else {
+            previewCard.style.display = 'none';
+        }
+    }
+    
+    topicInput.addEventListener('input', updatePreview);
+    frontInput.addEventListener('input', updatePreview);
+    backInput.addEventListener('input', updatePreview);
+    
+    // Initial preview if editing
+    updatePreview();
+</script>
+{% endblock %}
