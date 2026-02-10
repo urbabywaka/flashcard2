@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}My Flashcards - Flashcard App{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1><i class="bi bi-list-ul"></i> My Flashcards</h1>
+        <p class="text-muted">Manage and organize your study materials</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'flashcards:flashcard_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> New Flashcard
+        </a>
+        <div class="btn-group ms-2">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="bi bi-three-dots"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="{% url 'flashcards:import_flashcards' %}">
+                    <i class="bi bi-upload"></i> Import CSV
+                </a></li>
+                <li><a class="dropdown-item" href="{% url 'flashcards:export_flashcards' %}">
+                    <i class="bi bi-download"></i> Export CSV
+                </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                {{ form.search }}
+            </div>
+            <div class="col-md-3">
+                {{ form.topic }}
+            </div>
+            <div class="col-md-3">
+                {{ form.sort }}
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Flashcards List -->
+{% if flashcards %}
+<div class="row">
+    {% for flashcard in flashcards %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-primary">{{ flashcard.topic }}</span>
+                    {% if flashcard.is_known %}
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle"></i> Known
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <h5 class="card-title">{{ flashcard.front|truncatewords:15 }}</h5>
+                <p class="card-text text-muted small">{{ flashcard.back|truncatewords:20 }}</p>
+                
+                <div class="small text-muted mb-3">
+                    <i class="bi bi-calendar"></i> {{ flashcard.created_at|date:"M d, Y" }}
+                    {% if flashcard.times_reviewed > 0 %}
+                    <br><i class="bi bi-arrow-repeat"></i> Reviewed {{ flashcard.times_reviewed }} time{{ flashcard.times_reviewed|pluralize }}
+                    <br><i class="bi bi-graph-up"></i> {{ flashcard.get_success_rate }}% success rate
+                    {% endif %}
+                </div>
+                
+                <div class="btn-group w-100" role="group">
+                    <a href="{% url 'flashcards:flashcard_detail' flashcard.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{% url 'flashcards:flashcard_edit' flashcard.pk %}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'flashcards:flashcard_delete' flashcard.pk %}" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card text-center py-5">
+    <div class="card-body">
+        <i class="bi bi-inbox" style="font-size: 4rem; color: var(--text-secondary);"></i>
+        <h3 class="mt-3">No Flashcards Found</h3>
+        <p class="text-muted">Try adjusting your filters or create a new flashcard.</p>
+        <a href="{% url 'flashcards:flashcard_create' %}" class="btn btn-primary mt-2">
+            <i class="bi bi-plus-circle"></i> Create Flashcard
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Import Flashcards - Flashcard App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="bi bi-upload"></i> Import Flashcards</h3>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-info">
+                    <h5><i class="bi bi-info-circle"></i> CSV Format Requirements</h5>
+                    <p class="mb-2">Your CSV file should have the following columns:</p>
+                    <ul class="mb-0">
+                        <li><strong>Topic</strong> - The subject or category</li>
+                        <li><strong>Question (Front)</strong> or <strong>Front</strong> - The question</li>
+                        <li><strong>Answer (Back)</strong> or <strong>Back</strong> - The answer</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Example CSV:</h5>
+                    <pre class="bg-light p-3 rounded">Topic,Question (Front),Answer (Back)
+Mathematics,What is 2+2?,4
+History,Who was the first US President?,George Washington
+Science,What is H2O?,Water</pre>
+                </div>
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="csv_file" class="form-label">Select CSV File</label>
+                        <input type="file" 
+                               class="form-control" 
+                               id="csv_file" 
+                               name="csv_file" 
+                               accept=".csv"
+                               required>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload"></i> Import Flashcards
+                        </button>
+                        <a href="{% url 'flashcards:flashcard_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="text-muted mb-2">Don't have flashcards to import?</p>
+                    <a href="{% url 'flashcards:flashcard_create' %}" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Create Manually
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
