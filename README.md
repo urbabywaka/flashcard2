@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+# flashcard2
+flashcard
+=======
 # 🎓 FlashMaster - Full-Stack Django Flashcard Application
 
 A modern, feature-rich flashcard web application built with Python Django to help students create, organize, and review flashcards for effective studying.
@@ -330,3 +334,4 @@ Built with ❤️ using Django
 ---
 
 **Happy Studying! 📚**
+>>>>>>> 0c028f7 (Initial commit)

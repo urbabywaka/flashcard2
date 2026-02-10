@@ -89,6 +89,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# CSRF trusted origins for Render
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    'CSRF_TRUSTED_ORIGINS', 
+    'http://127.0.0.1,http://localhost'
+).split(',')
+
 # Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
